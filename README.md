@@ -6,7 +6,7 @@ A simple config gem to use in either rails or any other ruby gem.
 
 Add this line to your application's Gemfile:
 
-    gem 'figly', github: 'onetwopunch/figly'
+    gem 'figly'
 
 And then execute:
 
