@@ -1,0 +1,17 @@
+
+some_key: 234
+nest1:
+  nest2:
+    nest3: Yay
+
+hello:
+  - 1
+  - 2
+  - 3
+
+ary:
+  - nest1:
+      nest2:
+        'Woot'
+  - 3
+
