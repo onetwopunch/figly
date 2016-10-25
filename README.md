@@ -50,9 +50,9 @@ Figly currently supports the following file extensions, and will infer the parse
 
 ## Testing    
 
-If you want to contribute start by making sure the tests work. Also if you want to isolate the bundled gems to the sandbox (the path below is already in the .gitignore), run:
+If you want to contribute start by making sure the tests work:
 
-    bundle install --path vendor/bundle
+    bundle install
 
 To access a REPL environment that loads the libraries:
 
