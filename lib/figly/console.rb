@@ -4,5 +4,3 @@ Pry.config.prompt = lambda do |context, nesting, pry|
 end
 
 config = File.expand_path(File.join(__FILE__, '../../../spec/support/config.yml'))
-Figly.setup config
-

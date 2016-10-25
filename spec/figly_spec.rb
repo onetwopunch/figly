@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe Figly do
   context 'YAML' do
-    before do
-      Figly.setup(config_file)
-    end
+    before { Figly.load_file(config_file) }
+    after { Figly.clean }
 
     it 'should correctly access and integer on the top level' do
       expect(Figly::Settings.some_key).to eq(234)
@@ -32,20 +31,30 @@ describe Figly do
   end
 
   context 'TOML' do
-    before do
-      Figly.setup(config_file 'toml')
-    end
+    before { Figly.load_file(config_file 'toml') }
+    after { Figly.clean }
     it 'should parse and work for TOML' do
       expect(Figly::Settings.a.b).to eq({"c"=>{"d"=>"test"}})
     end
   end
 
   context 'JSON' do
-    before do
-      Figly.setup(config_file 'json')
-    end
+    before { Figly.load_file(config_file 'json') }
+    after { Figly.clean }
     it 'should parse and work with JSON' do
       expect(Figly::Settings.userId).to eq(1)
+    end
+  end
+
+  context 'multi files' do
+    before {
+      Figly.load_file(config_file 'json')
+      Figly.load_file(config_file 'toml')
+    }
+
+    it 'should have both sets of data merged' do
+      expect(Figly::Settings.userId).to eq(1)
+      expect(Figly::Settings.a.b.c).to eq({"d"=>"test"})
     end
   end
 end
