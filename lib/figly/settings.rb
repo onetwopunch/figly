@@ -1,4 +1,3 @@
-require 'yaml'
 module Figly
   module Settings
     module SettingsHash
@@ -12,13 +11,10 @@ module Figly
       end
     end
 
-    def self.settings_hash
-      YAML.load_file(Figly.path)
-    end
-
     def self.method_missing(meth, *args, &block)
-      if self.settings_hash.has_key? meth.to_s
-        val = settings_hash[meth.to_s]
+      data = Figly.data
+      if data.has_key? meth.to_s
+        val = data[meth.to_s]
         if val.instance_of?(Hash)
           val.extend(SettingsHash)
         elsif val.instance_of? Array
