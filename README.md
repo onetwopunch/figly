@@ -18,9 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-The only setup that's required is to set the path of you're configuration file that must be in YAML. Just throw the following code into an initializer:
+The only setup that's required is to set the path of you're configuration file that must be in YAML. Just throw the following code into an initializer.:
 
-    Figly.setup "path/to/config.yml"
+    Figly.load_file "path/to/config.yml"
+
+**NOTE: You can load multiple config files of different types and they will be deep merged together in your settings**
 
 If you're config looks like this:
 
@@ -33,12 +35,18 @@ You can do the following:
 
     Figly::Settings.some_key
     #=> 234
-    
+
     Figly::Settings.nest1
     #=> {"nest2" => {"nest3" => "Yay"}}
-    
+
     Figly::Settings.nest1.nest2.nest3
     #=> "Yay"
+
+Figly currently supports the following file extensions, and will infer the parser based on the extension:
+
+- .yml => YAML
+- .toml => TOML
+- .json => JSON
 
 ## Testing    
 
@@ -46,14 +54,14 @@ If you want to contribute start by making sure the tests work. Also if you want 
 
     bundle install --path vendor/bundle
 
-To access a REPL environment that loads the libraries as well as does the initial setup with the `spec/support/config.yml` set as the path:
+To access a REPL environment that loads the libraries:
 
     ./bin/console
-    
+
 To run tests:
 
     rspec spec
-    
+
 ## Contributing
 
 1. Fork it ( https://github.com/onetwopunch/figly/fork )
