@@ -5,6 +5,7 @@ module Figly
   class ParserError < StandardError; end
   class UnsupportedFormatError < StandardError; end
   class ConfigNotFoundError < StandardError; end
+  class ConfigNotLoaded < StandardError; end
 
   def self.load_file(path)
     raise ConfigNotFoundError, "File does not exist: #{path}" unless File.exists?(path)
@@ -47,7 +48,7 @@ module Figly
     end
 
     # Here we merge config files if there are multiple load calls
-    if defined?(@@data) && !@@data.nil?
+    if _config_loaded?
       _deep_merge(@@data, data)
     else
       @@data = data
@@ -60,11 +61,22 @@ module Figly
   end
 
   def self.data
+    _ensure_loaded!
     @@data
   end
 
   def self._deep_merge(first, second)
     merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
     first.merge!(second, &merger)
+  end
+
+  def self._ensure_loaded!
+    unless _config_loaded?
+      raise ConfigNotLoaded, "You must first load the config before attempting to access it"
+    end
+  end
+
+  def self._config_loaded?
+    defined?(@@data) && @@data
   end
 end

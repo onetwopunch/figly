@@ -59,6 +59,8 @@ describe Figly do
   end
 
   context 'errors' do
+    after { Figly.clean }
+
     context 'ParserError' do
       it 'should error on bad.yml' do
         expect{Figly.load_file('spec/support/bad.yml')}.to raise_error(Figly::ParserError)
@@ -80,6 +82,10 @@ describe Figly do
 
     it 'should raise an error on an unsupported config file format' do
       expect{ Figly.load_file("spec/support/config.ini") }.to raise_error(Figly::UnsupportedFormatError)
+    end
+
+    it 'should raise an exception if data is trying to be accessed before Figly has been loaded' do
+      expect{ Figly::Settings.a.b }.to raise_error(Figly::ConfigNotLoaded)
     end
   end
 end
