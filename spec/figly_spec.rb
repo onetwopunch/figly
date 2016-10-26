@@ -57,4 +57,29 @@ describe Figly do
       expect(Figly::Settings.a.b.c).to eq({"d"=>"test"})
     end
   end
+
+  context 'errors' do
+    context 'ParserError' do
+      it 'should error on bad.yml' do
+        expect{Figly.load_file('spec/support/bad.yml')}.to raise_error(Figly::ParserError)
+      end
+      it 'should error on bad.json' do
+        expect{Figly.load_file('spec/support/bad.json')}.to raise_error(Figly::ParserError)
+      end
+      it 'should error on bad.toml' do
+        expect{Figly.load_file('spec/support/bad.toml')}.to raise_error(Figly::ParserError)
+      end
+      it 'should reset $stdout to the default even on an error' do
+        expect{ Figly.load_file('spec/support/bad.toml') rescue nil }.not_to change { $stdout }
+      end
+    end
+
+    it 'should raise an error if the config file is not found' do
+      expect{ Figly.load_file('spec/support/nonexistent.json') }.to raise_error(Figly::ConfigNotFoundError)
+    end
+
+    it 'should raise an error on an unsupported config file format' do
+      expect{ Figly.load_file("spec/support/config.ini") }.to raise_error(Figly::UnsupportedFormatError)
+    end
+  end
 end

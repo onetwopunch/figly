@@ -3,10 +3,11 @@ require "figly/settings"
 
 module Figly
   class ParserError < StandardError; end
-  class UnsupportedError < StandardError; end
+  class UnsupportedFormatError < StandardError; end
+  class ConfigNotFoundError < StandardError; end
 
   def self.load_file(path)
-    raise "File does not exist: #{path}" unless File.exists?(path)
+    raise ConfigNotFoundError, "File does not exist: #{path}" unless File.exists?(path)
     ext = File.extname(path)
     data = case ext
     when '.toml'
@@ -17,13 +18,15 @@ module Figly
         # that the value doesn't match an error
         old_stdout = $stdout
         $stdout = StringIO.new('','w')
-        d = TOML.load_file(path)
-        cap = $stdout.string
-        raise ParserError, cap if cap =~ /^Failed to match/
-        $stdout = old_stdout
-        d
+        TOML.load_file(path).tap do |d|
+          cap = $stdout.string
+          raise ParserError, cap if cap =~ /^Failed to match/
+        end
       rescue Exception => e
         raise ParserError, e.message
+      ensure
+        # Make sure to reset the old stdout even if an exception is thrown
+        $stdout = old_stdout
       end
     when '.yml'
       begin
@@ -40,7 +43,7 @@ module Figly
         raise ParserError, e.message
       end
     else
-      raise UnsupportedError, "Unsupported file extension (#{ext})"
+      raise UnsupportedFormatError, "Unsupported file extension (#{ext})"
     end
 
     # Here we merge config files if there are multiple load calls
