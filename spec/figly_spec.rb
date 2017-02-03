@@ -28,6 +28,26 @@ describe Figly do
     it 'should return nil when accessing a key that doesnt exist' do
       expect(Figly::Settings.blah).to eq(nil)
     end
+
+    context 'indifferent access' do
+      it 'should be able to access a symbol key from a string hash', focus: true do
+        expect(Figly::Settings.to_h[:a]).to eq({'aa' => {'aaa' => 'ohai'}})
+        expect(Figly::Settings.a[:aa]).to eq({'aaa' => 'ohai'})
+        expect(Figly::Settings.a.aa[:aaa]).to eq('ohai')
+      end
+
+      it 'should be able to access a string key from a symbol hash' do
+        expect(Figly::Settings.to_h['a']).to eq({'aa' => {'aaa' => 'ohai'}})
+        expect(Figly::Settings['a']['aa']).to eq({'aaa' => 'ohai'})
+        expect(Figly::Settings['a']['aa']['aaa']).to eq('ohai')
+      end
+    end
+
+    context 'symbolize_keys' do
+      it 'should deep symbolize the keys' do
+        expect(Figly::Settings.a.symbolize_keys).to eq(({:aa => {:aaa => 'ohai'}}))
+      end
+    end
   end
 
   context 'TOML' do
@@ -55,6 +75,8 @@ describe Figly do
     it 'should have both sets of data merged' do
       expect(Figly::Settings.userId).to eq(1)
       expect(Figly::Settings.a.b.c).to eq({"d"=>"test"})
+      expect(Figly::Settings.to_h[:a][:b][:c]).to eq({"d"=>"test"})
+      expect(Figly::Settings[:a][:b][:c][:d]).to eq("test")
     end
   end
 

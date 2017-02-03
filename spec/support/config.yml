@@ -15,3 +15,6 @@ ary:
         'Woot'
   - 3
 
+a:
+  aa:
+    aaa: ohai

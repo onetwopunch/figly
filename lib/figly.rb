@@ -51,7 +51,7 @@ module Figly
     if _config_loaded?
       _deep_merge(@@data, data)
     else
-      @@data = data
+      @@data = data.extend(Settings::SettingsHash)
     end
   end
 

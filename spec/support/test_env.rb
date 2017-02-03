@@ -1,3 +1,4 @@
+require 'pry'
 module TestEnv
   def config_file(ext = 'yml')
     File.join(root, "spec/support/config.#{ext}")

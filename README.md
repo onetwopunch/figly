@@ -48,6 +48,20 @@ Figly currently supports the following file extensions, and will infer the parse
 - .toml => TOML
 - .json => JSON
 
+
+## UPDATE: As of version 1.1.0
+
+You can now use your settings directly from Figly::Settings with indifferent access. So using the above config, you can access
+the value `Yay` in all of the following ways, plus the ways you were able to before.
+
+```
+Figly::Settings[:nest1][:nest2].nest3
+Figly::Settings['nest1'][:nest2]['nest3']
+
+# Or if calling a method on a module makes you uncomfortable, you can use #to_h
+Figly::Settings.to_h['nest1'][:nest2]['nest3']
+```
+
 ## Testing    
 
 If you want to contribute start by making sure the tests work:
